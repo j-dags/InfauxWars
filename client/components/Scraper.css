@@ -103,9 +103,8 @@ button {
   border-radius: 3px;
   color: white;
   height: 35px;
-  max-width: 518px;
-  width: 64vw;
-  margin-right: 2px;
+  max-width: 500px;
+  width: 65vw;
 }
 
 button:hover {
@@ -123,9 +122,9 @@ input {
   border-radius: 3px;
   height: 34px;
   margin-bottom: 1rem;
-  max-width: 500px;
+  max-width: 482px;
   padding: 0rem 0.5rem;
-  width: 60vw;
+  width: 62vw;
 }
 
 .link:hover {
