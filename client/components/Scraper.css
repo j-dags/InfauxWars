@@ -44,6 +44,7 @@
   transform: translate(-50%, -50%);
   width: 75vw;
   max-height: 50vh;
+  /* margin: 2rem 0rem; */
 }
 
 .input-group {
@@ -143,10 +144,6 @@ textarea {
 }
 
 @media screen and (min-height: 1000px) {
-  .search {
-    bottom: 12%;
-  }
-
   .error {
     font-size: 1.25rem;
   }

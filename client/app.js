@@ -4,12 +4,7 @@ import {Navbar, FlexCol} from './components'
 import Routes from './routes'
 
 const App = () => {
-  return (
-    <FlexCol>
-      <Navbar />
-      <Routes />
-    </FlexCol>
-  )
+  return <Routes />
 }
 
 export default App
