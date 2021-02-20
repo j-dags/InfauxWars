@@ -33,7 +33,7 @@ router.get('/predict', async (req, res, next) => {
     // Instantiates a client
     const client = new PredictionServiceClient({
       keyFilename: 'google-creds.json',
-      projectId: 'fakenews-303120'
+      projectId: 'fakenews-303120',
     })
     // Construct request
     const request = {
@@ -41,9 +41,9 @@ router.get('/predict', async (req, res, next) => {
       payload: {
         textSnippet: {
           content: content,
-          mimeType: 'text/plain' // Types: 'test/plain', 'text/html'
-        }
-      }
+          mimeType: 'text/plain', // Types: 'test/plain', 'text/html'
+        },
+      },
     }
 
     const [response] = await client.predict(request)
@@ -69,10 +69,10 @@ router.get('/similar-articles', async (req, res, next) => {
     const similarArticles = await Article.findAll({
       where: {
         [className]: {
-          [Op.between]: [70, 100]
-        }
+          [Op.between]: [70, 100],
+        },
       },
-      order: [['createdAt', 'ASC']]
+      order: [['createdAt', 'ASC']],
     })
     res.json(similarArticles)
   } catch (error) {
@@ -90,8 +90,8 @@ router.get('/hall-of-articles', async (req, res, next) => {
         'reliable',
         'political',
         'satire',
-        'unknown'
-      ]
+        'unknown',
+      ],
     })
 
     const groupedPublishers = articles.reduce((r, a) => {
@@ -111,7 +111,7 @@ router.get('/hall-of-articles', async (req, res, next) => {
 router.get('/frequent-articles', async (req, res, next) => {
   try {
     const publisherArticles = await Article.findAll({
-      attributes: ['publisher']
+      attributes: ['publisher'],
     })
 
     const groupedPublishers = publisherArticles.reduce((r, a) => {
@@ -131,7 +131,7 @@ router.get('/recent-articles', async (req, res, next) => {
   try {
     const recentArticles = await Article.findAll({
       attributes: ['publisher'],
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     })
 
     res.json(recentArticles)
@@ -144,7 +144,7 @@ router.get('/recent-articles', async (req, res, next) => {
 router.get('/prev', async (req, res, next) => {
   try {
     const response = await Article.findOne({
-      where: {url: req.query.url}
+      where: {url: req.query.url},
     })
     res.json(response)
   } catch (err) {
@@ -152,76 +152,76 @@ router.get('/prev', async (req, res, next) => {
   }
 })
 
-// // News API
-// router.get('/related-articles', async (req, res, next) => {
-//   const keywords = req.query.keywords.join(' ')
-//   let url =
-//     'http://newsapi.org/v2/everything?' +
-//     `q=${keywords}&` +
-//     `from=${lastMonth()}&` +
-//     'sortBy=relevance&' +
-//     'pageSize=100&' +
-//     'apiKey=c34cbe9c82224dd9b6aebcc8266348d2'
-
-//   try {
-//     const response = await axios.get(url)
-//     let {articles} = response.data
-
-//     let ans = []
-//     let domains = []
-//     articles.forEach(article => {
-//       if (!domains.includes(article.source.name)) {
-//         ans.push(article)
-//         domains.push(article.source.name)
-//       }
-//     })
-//     res.json(ans)
-//   } catch (error) {
-//     console.log('NEWS API FAILED')
-//     next(error)
-//   }
-// })
-
-// Web Search (contextual) API
-// Python script to preprocess aka remove filler words/characters from text body
+// News API
 router.get('/related-articles', async (req, res, next) => {
   const keywords = req.query.keywords.join(' ')
-  const options = {
-    method: 'GET',
-    url:
-      'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/NewsSearchAPI',
-    params: {
-      q: keywords,
-      pageNumber: '1',
-      pageSize: '5',
-      autoCorrect: 'true',
-      fromPublishedDate: 'null',
-      toPublishedDate: 'null'
-    },
-    headers: {
-      'x-rapidapi-key': '9d408c82f7msh3dc0cdcca9d8571p1a2f26jsn95d0bdac7160',
-      'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com'
-    }
-  }
+  let url =
+    'http://newsapi.org/v2/everything?' +
+    `q=${keywords}&` +
+    `from=${lastMonth()}&` +
+    'sortBy=relevance&' +
+    'pageSize=100&' +
+    'apiKey=c34cbe9c82224dd9b6aebcc8266348d2'
 
-  axios
-    .request(options)
-    .then(function(response) {
-      // console.log(response.data.value.slice(0, 2))
-      let ans = []
-      let domains = []
-      response.data.value.forEach(article => {
-        if (!domains.includes(article.provider.name)) {
-          ans.push(article)
-          domains.push(article.provider.name)
-        }
-      })
-      res.send(ans)
+  try {
+    const response = await axios.get(url)
+    let {articles} = response.data
+
+    let ans = []
+    let domains = []
+    articles.forEach((article) => {
+      if (!domains.includes(article.source.name)) {
+        ans.push(article)
+        domains.push(article.source.name)
+      }
     })
-    .catch(function(error) {
-      console.error(error)
-    })
+    res.json(ans)
+  } catch (error) {
+    console.log('NEWS API FAILED')
+    next(error)
+  }
 })
+
+// // Web Search (contextual) API
+// // Python script to preprocess aka remove filler words/characters from text body
+// router.get('/related-articles', async (req, res, next) => {
+//   const keywords = req.query.keywords.join(' ')
+//   const options = {
+//     method: 'GET',
+//     url:
+//       'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/NewsSearchAPI',
+//     params: {
+//       q: keywords,
+//       pageNumber: '1',
+//       pageSize: '5',
+//       autoCorrect: 'true',
+//       fromPublishedDate: 'null',
+//       toPublishedDate: 'null'
+//     },
+//     headers: {
+//       'x-rapidapi-key': '9d408c82f7msh3dc0cdcca9d8571p1a2f26jsn95d0bdac7160',
+//       'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com'
+//     }
+//   }
+
+//   axios
+//     .request(options)
+//     .then(function(response) {
+//       // console.log(response.data.value.slice(0, 2))
+//       let ans = []
+//       let domains = []
+//       response.data.value.forEach(article => {
+//         if (!domains.includes(article.provider.name)) {
+//           ans.push(article)
+//           domains.push(article.provider.name)
+//         }
+//       })
+//       res.send(ans)
+//     })
+//     .catch(function(error) {
+//       console.error(error)
+//     })
+// })
 
 // Posting new articles to database
 router.post('/scrape', async (req, res, next) => {
