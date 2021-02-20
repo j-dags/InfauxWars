@@ -1,0 +1,29 @@
+{
+  "dir": "ltr",
+  "lang": "sw",
+  "name": "Infaux Wars",
+  "short_name": "Infaux Wars",
+  "scope": "/",
+  "display": "standalone",
+  "start_url": "https://infaux-wars.herokuapp.com/",
+  "background_color": "#fafafa",
+  "theme_color": "transparent",
+  "description": "",
+  "orientation": "any",
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/faux512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/faux128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "url": "https://infaux-wars.herokuapp.com/"
+}

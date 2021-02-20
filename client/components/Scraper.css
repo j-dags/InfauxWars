@@ -1,0 +1,153 @@
+/*
+---CONTAINERS---
+*/
+
+#analytics {
+  width: 85vw;
+  align-items: stretch;
+  max-width: 900px;
+}
+
+.chart {
+  margin: 3rem 1rem;
+}
+
+.chart-container {
+  width: 500px;
+  margin-bottom: 5rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  place-content: space-around;
+  padding: 2rem;
+  flex-wrap: wrap;
+}
+
+#graph {
+  padding: 2rem;
+  background: #f4f4f4;
+}
+
+/* laptops and desktops */
+@media screen and (min-width: 1200px) {
+  #graph {
+    margin: 2rem 0rem 4rem 0rem;
+  }
+}
+
+.illustration {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 75vw;
+  max-height: 50vh;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.response {
+  text-align: center;
+  margin: 2rem 2rem 1rem 2rem;
+}
+
+.search {
+  bottom: 10%;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+#title {
+  border-radius: 5px;
+  margin: 3rem 0rem;
+  align-items: flex-start;
+}
+
+#title:hover {
+  cursor: pointer;
+}
+
+#read-more {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+#title h3 {
+  margin: 1rem 0rem;
+  text-align: left;
+}
+
+/*
+---ELEMENTS---
+*/
+
+#article-text {
+  line-height: 1.5rem;
+  font-weight: 300;
+}
+
+.back-button {
+  margin: 3rem 0rem 5rem 0rem;
+}
+
+button {
+  background: #222;
+  border: 1px solid #222;
+  border-radius: 3px;
+  color: white;
+  height: 35px;
+  max-width: 518px;
+  width: 64vw;
+  margin-right: 2px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  font-size: 1rem;
+  text-align: center;
+}
+
+input {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  height: 34px;
+  margin-bottom: 1rem;
+  max-width: 500px;
+  padding: 0rem 0.5rem;
+  width: 60vw;
+}
+
+.link:hover {
+  cursor: pointer;
+}
+
+textarea {
+  margin-left: 4rem;
+}
+
+/* laptops and desktops */
+@media screen and (min-width: 1200px) {
+  .back-button {
+    margin: 2rem 0rem 8rem 0rem;
+  }
+}
+
+@media screen and (min-height: 1000px) {
+  .search {
+    bottom: 12%;
+  }
+
+  .error {
+    font-size: 1.25rem;
+  }
+}

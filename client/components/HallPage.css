@@ -1,0 +1,76 @@
+#hall-of-fame {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  max-width: 80vw;
+}
+
+#hall-of-fame h2 {
+  font-family: 'Vollkorn', serif;
+  font-size: 1.75rem;
+}
+
+#fame,
+#shame {
+  margin: 2rem 0rem;
+}
+
+ul {
+  list-style-type: none;
+}
+
+#rating-green {
+  align-items: flex-end;
+  color: #6cda8b;
+  background: none;
+}
+
+#rating-red {
+  align-items: flex-end;
+  color: #ff725e;
+  background: none;
+}
+
+.hall-description {
+  margin: 3rem 1rem 4rem 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.hall-illustration {
+  height: 60vh;
+  max-height: 70ch;
+  width: 60vh;
+  max-width: 70ch;
+}
+
+.share-illustration {
+  height: 60vh;
+  max-height: 70ch;
+  width: 60vh;
+  max-width: 70ch;
+}
+
+.hof-back-button {
+  margin: 3rem 0rem 5rem 0rem;
+  max-width: 400px;
+}
+
+#recent,
+#frequent {
+  margin: 2rem 0rem;
+}
+
+#recent h2 {
+  text-align: left;
+}
+
+#frequent h2 {
+  text-align: left;
+}
+
+#recent-container {
+  padding: 2rem;
+  margin: 3rem 0rem;
+  /* background: #eee; */
+  border-radius: 5px;
+}
