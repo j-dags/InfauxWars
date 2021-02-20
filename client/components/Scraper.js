@@ -10,7 +10,7 @@ import {
   Landing,
   Fade,
   Response,
-  FlexCol
+  FlexCol,
 } from '../components'
 import Parallax from './LandingParallax'
 import {connect} from 'react-redux'
@@ -36,7 +36,7 @@ class Scraper extends Component {
       title: '',
       url: 'Enter URL',
       windowHeight: window.innerHeight,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
     }
 
     this.checkPrev = this.checkPrev.bind(this)
@@ -61,7 +61,7 @@ class Scraper extends Component {
       _.debounce(() => {
         this.setState({
           windowHeight: window.innerHeight,
-          windowWidth: window.innerWidth
+          windowWidth: window.innerWidth,
         })
       }, 200)
     )
@@ -69,7 +69,7 @@ class Scraper extends Component {
 
   setUrl(event) {
     this.setState({
-      url: event.target.value
+      url: event.target.value,
     })
   }
 
@@ -83,7 +83,7 @@ class Scraper extends Component {
     this.setState({publisher: '', loaded: 'loading'})
     try {
       const {data} = await axios.get('/api/processing/prev', {
-        params: {url: this.state.url}
+        params: {url: this.state.url},
       })
 
       if (data) {
@@ -92,7 +92,7 @@ class Scraper extends Component {
           data.political,
           data.reliable,
           data.satire,
-          data.unknown
+          data.unknown,
         ])
 
         const scores = {
@@ -100,10 +100,10 @@ class Scraper extends Component {
           satire: data.satire,
           reliable: data.reliable,
           unknown: data.unknown,
-          political: data.political
+          political: data.political,
         }
-        const label = Object.keys(scores).reduce(
-          (a, b) => (scores[a] > scores[b] ? a : b)
+        const label = Object.keys(scores).reduce((a, b) =>
+          scores[a] > scores[b] ? a : b
         )
 
         this.setState(
@@ -117,9 +117,9 @@ class Scraper extends Component {
               political: data.political,
               reliable: data.reliable,
               satire: data.satire,
-              unkown: data.unknown
+              unkown: data.unknown,
             },
-            keywords: data.keywords
+            keywords: data.keywords,
           },
           () => this.fetchArticles()
         )
@@ -135,11 +135,11 @@ class Scraper extends Component {
       publisher: '',
       loaded: 'loading',
       error: false,
-      progress: 16.7
+      progress: 16.7,
     })
     try {
       const {data} = await axios.get('/api/processing/scrape/meta', {
-        params: {targetUrl: this.state.url}
+        params: {targetUrl: this.state.url},
       })
       this.setState({publisher: data.publisher}, () => this.sendUrl())
     } catch (error) {
@@ -158,13 +158,13 @@ class Scraper extends Component {
       title: '',
       label: '',
       loaded: 'loading',
-      progress: 33.3
+      progress: 33.3,
     })
     this.setChartData()
 
     try {
       const {data} = await axios.get('/api/python/scrape', {
-        params: {url: this.state.url}
+        params: {url: this.state.url},
       })
       // If scraped text is too small either scrape failed or is not enough info for prediction
       if (data.text.split(' ').length < 100) {
@@ -173,7 +173,7 @@ class Scraper extends Component {
         this.setState(
           {
             html: data.text,
-            title: data.title
+            title: data.title,
           },
           () => this.preProcess()
         )
@@ -192,7 +192,7 @@ class Scraper extends Component {
       loaded: 'no',
       processed: '',
       title: '',
-      url: 'Enter URL'
+      url: 'Enter URL',
     })
   }
 
@@ -203,13 +203,13 @@ class Scraper extends Component {
 
     try {
       const {data} = await axios.get('/api/python/preprocess', {
-        params: {text: this.state.html}
+        params: {text: this.state.html},
       })
 
       this.setState(
         {
           processed: data.text,
-          keywords: data.keywords
+          keywords: data.keywords,
         },
         () => this.getPrediction()
       )
@@ -223,19 +223,16 @@ class Scraper extends Component {
   // Call Google NLP Api
   async getPrediction() {
     this.setState({progress: 66.7})
-    let shortenedText = this.state.processed
-      .split(' ')
-      .slice(0, 400)
-      .join(' ')
+    let shortenedText = this.state.processed.split(' ').slice(0, 400).join(' ')
 
     try {
       const response = await axios.get('/api/processing/predict', {
-        params: {text: shortenedText}
+        params: {text: shortenedText},
       })
 
       // Organize API response and set to state
       let scores = {}
-      response.data.forEach(datum => {
+      response.data.forEach((datum) => {
         scores[datum.displayName] = datum.classification.score * 100
       })
       let {fake, political, reliable, satire, unknown} = scores
@@ -243,7 +240,7 @@ class Scraper extends Component {
 
       // Refactor API response and save to state
       let obj = {}
-      response.data.forEach(score => {
+      response.data.forEach((score) => {
         obj[score.displayName] = score.classification.score
       })
       let max = response.data.reduce((prev, current) => {
@@ -255,9 +252,9 @@ class Scraper extends Component {
         {
           label: [
             Math.round(max.classification.score * 1000) / 10,
-            max.displayName
+            max.displayName,
           ],
-          scores: obj
+          scores: obj,
         },
         () => this.saveArticle()
       )
@@ -281,7 +278,7 @@ class Scraper extends Component {
         reliable: this.state.scores.reliable * 100,
         satire: this.state.scores.satire * 100,
         unknown: this.state.scores.unknown * 100,
-        keywords: this.state.keywords
+        keywords: this.state.keywords,
       })
       this.fetchArticles()
     } catch (error) {
@@ -293,7 +290,7 @@ class Scraper extends Component {
     this.setState({progress: 83.3})
     try {
       let {data} = await axios.get('/api/processing/related-articles', {
-        params: {keywords: this.state.keywords.slice(0, 3)}
+        params: {keywords: this.state.keywords.slice(0, 3)},
       })
       this.setState({relatedArticles: data, loaded: 'yes', progress: 100})
     } catch (error) {
@@ -315,11 +312,11 @@ class Scraper extends Component {
               'rgba(255, 206, 86, 0.6)',
               'rgba(75, 192, 192, 0.6)',
               'rgba(153, 102, 255, 0.6)',
-              'rgba(255, 159, 64, 0.6)'
-            ]
-          }
-        ]
-      }
+              'rgba(255, 159, 64, 0.6)',
+            ],
+          },
+        ],
+      },
     })
   }
 
@@ -343,11 +340,7 @@ class Scraper extends Component {
       let {html} = this.state
       let wordCount = html.split(' ').length
       if (wordCount > 500)
-        return html
-          .split(' ')
-          .slice(0, 500)
-          .join(' ')
-          .concat('...')
+        return html.split(' ').slice(0, 500).join(' ').concat('...')
       else return this.state.html
     }
   }
@@ -366,7 +359,7 @@ class Scraper extends Component {
       title,
       url,
       windowHeight,
-      windowWidth
+      windowWidth,
     } = this.state
 
     const search = (
@@ -374,16 +367,17 @@ class Scraper extends Component {
         {loaded !== 'yes' && (
           <FlexCol>
             <Fade show={loaded === 'no'}>
-              {error && (
-                <div className="error">
-                  Oops! There was an error with that article.
-                </div>
-              )}
               <FlexCol className="illustration">
-                {windowWidth < 1200 || windowHeight < 1100 ? (
+                {/* {windowWidth < 1200 || windowHeight < 1100 ? (
                   <Landing />
-                ) : (
-                  <Parallax />
+                  ) : (
+                    <Parallax />
+                  )} */}
+                <Landing />
+                {error && (
+                  <div className="error" style={{marginBottom: '5rem'}}>
+                    Oops! There was an error with that article.
+                  </div>
                 )}
               </FlexCol>
               <Input
@@ -445,9 +439,9 @@ class Scraper extends Component {
   }
 }
 
-const mapDispatch = dispatch => {
+const mapDispatch = (dispatch) => {
   return {
-    createArticle: newArticle => dispatch(createArticle(newArticle))
+    createArticle: (newArticle) => dispatch(createArticle(newArticle)),
   }
 }
 
