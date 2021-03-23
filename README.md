@@ -8,7 +8,7 @@ As our capstone project, this project served as a great exploration into leverag
 
 To use this app, either:
 
-Visit https://infaux-wars.herokuapp.com
+Visit https://infauxwars.herokuapp.com
 
 or
 
