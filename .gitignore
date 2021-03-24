@@ -8,3 +8,4 @@ yarn-error.log
 google-creds-env.env
 google-creds.json
 node_modules
+model

@@ -40,7 +40,7 @@ corpus.append('the') #countVectorizer needed an array so I append a dummy word
 # import contractions
 
 # from nltk.corpus import stopwords
-# from nltk.tokenize import RegexpTokenizer
+# from nltk.1ize import RegexpTokenizer
 # from nltk.stem import WordNetLemmatizer
 # from nltk.stem.porter import PorterStemmer
 # lemmatizer = WordNetLemmatizer()
