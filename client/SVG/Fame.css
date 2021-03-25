@@ -3,7 +3,7 @@ svg#freepik_stories-winners:not(.animated) .animable {
 }
 .background-fame {
   animation: 1s 1 forwards cubic-bezier(0.36, -0.01, 0.5, 1.38) slideLeft,
-    0.3s Infinite linear floatingX;
+    6s Infinite linear floatingX;
   animation-delay: 0s, 1s;
 }
 
@@ -53,7 +53,7 @@ svg#freepik_stories-winners:not(.animated) .animable {
     transform: translateX(0px);
   }
   50% {
-    transform: translateX(-100px);
+    transform: translateX(-10px);
   }
   100% {
     opacity: 1;

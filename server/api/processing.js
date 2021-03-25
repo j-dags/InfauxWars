@@ -22,9 +22,9 @@ const lastMonth = () => {
 // Google ML route
 router.get('/predict', async (req, res, next) => {
   try {
-    const projectId = 'fakenews-303120'
+    const projectId = 'infra-chimera-308614'
     const location = 'us-central1'
-    const modelId = 'TCN5494508093624549376'
+    const modelId = 'TCN8708793997985841152'
     const content = req.query.text
 
     // Imports the Google Cloud AutoML library
@@ -33,7 +33,7 @@ router.get('/predict', async (req, res, next) => {
     // Instantiates a client
     const client = new PredictionServiceClient({
       keyFilename: 'google-creds.json',
-      projectId: 'fakenews-303120',
+      projectId: 'infra-chimera-308614',
     })
     // Construct request
     const request = {
