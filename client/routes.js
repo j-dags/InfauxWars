@@ -11,6 +11,7 @@ const Routes = () => {
       {/* Routes placed here are available to all visitors */}
       <Route exact path="/" component={Scraper} />
       <Route path="/hall" component={HallPage} />
+      <Route path="/results" component={HallPage} />
     </Switch>
   )
 }

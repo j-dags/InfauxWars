@@ -203,7 +203,7 @@ class Scraper extends Component {
 
     try {
       const { data } = await axios.get('https://infauxwars-python.herokuapp.com/preprocess', {
-        params: {text: this.state.html},
+        params: { text: this.state.html }
       })
 
       this.setState(
