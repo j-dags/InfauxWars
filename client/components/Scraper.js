@@ -163,7 +163,7 @@ class Scraper extends Component {
     this.setChartData()
 
     try {
-      const { data } = await axios.get('http://infauxwars-python.herokuapp.com/scrape', {
+      const { data } = await axios.get('https://infauxwars-python.herokuapp.com/scrape', {
         params: {url: this.state.url},
       })
 
@@ -202,7 +202,7 @@ class Scraper extends Component {
     this.setState({progress: 50})
 
     try {
-      const { data } = await axios.get('http://infauxwars-python.herokuapp.com/preprocess', {
+      const { data } = await axios.get('https://infauxwars-python.herokuapp.com/preprocess', {
         params: {text: this.state.html},
       })
 
