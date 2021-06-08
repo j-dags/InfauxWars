@@ -48,13 +48,13 @@ router.get('/predict', async (req, res, next) => {
 
     const [response] = await client.predict(request)
 
-    for (const annotationPayload of response.payload) {
-      // console.log(`Predicted class name: ${annotationPayload.displayName}`)
-      // console.log(
-      //   `Predicted class score: ${annotationPayload.classification.score}`
-      // )
-      // console.log(response.payload)
-    }
+    // for (const annotationPayload of response.payload) {
+    //   console.log(`Predicted class name: ${annotationPayload.displayName}`)
+    //   console.log(
+    //     `Predicted class score: ${annotationPayload.classification.score}`
+    //   )
+    //   console.log(response.payload)
+    // }
     res.json(response.payload)
   } catch (err) {
     next(err)

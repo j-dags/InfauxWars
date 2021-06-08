@@ -163,9 +163,10 @@ class Scraper extends Component {
     this.setChartData()
 
     try {
-      const {data} = await axios.get('/api/python/scrape', {
+      const { data } = await axios.get('http://infauxwars-python.herokuapp.com/scrape', {
         params: {url: this.state.url},
       })
+
       // If scraped text is too small either scrape failed or is not enough info for prediction
       if (data.text.split(' ').length < 100) {
         throw new Error('scrape err')
@@ -199,10 +200,9 @@ class Scraper extends Component {
   // Cleans up text for Google NLP API
   async preProcess() {
     this.setState({progress: 50})
-    // let shortenedText = this.state.html.split(' ').slice(0, 1000).join(' ')
 
     try {
-      const {data} = await axios.get('/api/python/preprocess', {
+      const { data } = await axios.get('http://infauxwars-python.herokuapp.com/preprocess', {
         params: {text: this.state.html},
       })
 
@@ -358,8 +358,6 @@ class Scraper extends Component {
       relatedArticles,
       title,
       url,
-      windowHeight,
-      windowWidth,
     } = this.state
 
     const search = (
@@ -368,11 +366,6 @@ class Scraper extends Component {
           <FlexCol>
             <Fade show={loaded === 'no'}>
               <FlexCol className="illustration">
-                {/* {windowWidth < 1200 || windowHeight < 1100 ? (
-                  <Landing />
-                  ) : (
-                    <Parallax />
-                  )} */}
                 <Landing />
                 {error && (
                   <div className="error" style={{marginBottom: '5rem'}}>
