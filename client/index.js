@@ -10,15 +10,15 @@ import { CounterContextProvider } from './components/Context'
 
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router history={history}>
-      <CounterContextProvider>
-        <FlexCol>
-          <Navbar />
-          <App />
-        </FlexCol>
-      </CounterContextProvider>
-    </Router>
-  </Provider>,
+  <CounterContextProvider>
+    <Provider store={store}>
+      <Router history={history}>
+          <FlexCol>
+            <Navbar />
+            <App />
+          </FlexCol>
+      </Router>
+    </Provider>
+  </CounterContextProvider>,
   document.getElementById('app')
 )

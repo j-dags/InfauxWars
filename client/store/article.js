@@ -3,6 +3,7 @@ const ADD_ARTICLE = 'ADD_ARTICLE'
 const HALL_ARTICLES = 'HALL_ARTICLES'
 const FREQUENT_ARTICLES = 'FREQUENT_ARTICLES'
 const RECENT_ARTICLES = 'RECENT_ARTICLES'
+const RELATED_ARTICLES = 'RELATED_ARTICLES'
 
 export const addArticle = article => ({
   type: ADD_ARTICLE,
@@ -22,6 +23,11 @@ export const frequentArticles = freqArticles => ({
 export const recentArticles = recArticles => ({
   type: RECENT_ARTICLES,
   recArticles
+})
+
+export const relatedArticles = relArticles => ({
+  type: RELATED_ARTICLES,
+  relArticles,
 })
 
 export const createArticle = newArticle => {
@@ -128,6 +134,20 @@ export const fetchRecentArticles = () => {
   }
 }
 
+export const fetchRelatedArticles = (keywords) => {
+  return async dispatch => {
+    try {
+      let {data} = await axios.get('/api/processing/related-articles', {
+        params: {keywords: keywords.slice(0, 3)},
+      })
+
+      dispatch(relatedArticles(data))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
 const initialState = {
   hallArticles: [],
   freqArticles: [],
@@ -149,6 +169,10 @@ export default function articlesReducer(state = initialState, action) {
     }
     case RECENT_ARTICLES: {
       return {...state, recArticles: action.recArticles}
+    }
+    case RELATED_ARTICLES: {
+      console.log('action > ', action)
+      return {...state, relatedArticles: action.relArticles}
     }
     default:
       return state
