@@ -14,7 +14,7 @@ import {
 } from '../components'
 import {connect} from 'react-redux'
 import {createArticle, fetchRelatedArticles} from '../store/article'
-import { checkPrev, getPrediction, preProcess, scrapeArticle } from '../store/scrape'
+import { checkPrev, clearState, getPrediction, preProcess, scrapeArticle } from '../store/scrape'
 import './Scraper.css'
 
 class Scraper extends Component {
@@ -35,12 +35,14 @@ class Scraper extends Component {
     this.clearUrl = this.clearUrl.bind(this)
     this.errorMsg = this.errorMsg.bind(this)
     this.handleClick = this.handleClick.bind(this)
-    this.saveArticle = this.saveArticle.bind(this)
+    // this.saveArticle = this.saveArticle.bind(this)
     this.setUrl = this.setUrl.bind(this)
     this.toggleHide = this.toggleHide.bind(this)
   }
 
   componentDidMount() {
+    this.props.clearState()
+
     window.addEventListener(
       'resize',
       _.debounce(() => {
@@ -74,11 +76,29 @@ class Scraper extends Component {
     try {
       // Checks if article exists in db, if not dispatches scrape publisher thunk
       await this.props.checkPrev(this.state.url)
+      this.setState({progress: 16})
       if (this.props.scrape.scores.length < 1) {
         await this.props.scrapeArticle(this.state.url)
+        this.setState({progress: 33})
+
         await this.props.preProcess(this.props.scrape.html)
+        this.setState({progress: 50})
+
         await this.props.getPrediction(this.props.scrape.processed)
-        await this.saveArticle()
+        this.setState({progress: 66})
+
+        await this.props.createArticle({
+          publisher: this.props.scrape.publisher,
+          url: this.state.url,
+          text: this.props.scrape.html,
+          title: this.props.scrape.title,
+          fake: this.props.scrape.scores.fake,
+          political: this.props.scrape.scores.political,
+          reliable: this.props.scrape.scores.reliable,
+          satire: this.props.scrape.scores.satire,
+          unknown: this.props.scrape.scores.unknown,
+          keywords: this.props.scrape.keywords,
+        })
       }
       await this.props.fetchRelatedArticles(this.props.scrape.keywords)
       this.setState({loaded: 'yes'})
@@ -94,26 +114,6 @@ class Scraper extends Component {
       progress: 0,
       url: 'Enter URL',
     })
-  }
-
-  async saveArticle() {
-    // Save article to DB
-    try {
-      await this.props.createArticle({
-        publisher: this.props.scrape.publisher,
-        url: this.state.url,
-        text: this.props.scrape.html,
-        title: this.props.scrape.title,
-        fake: this.props.scrape.scores.fake,
-        political: this.props.scrape.scores.political,
-        reliable: this.props.scrape.scores.reliable,
-        satire: this.props.scrape.scores.satire,
-        unknown: this.props.scrape.scores.unknown,
-        keywords: this.props.scrape.keywords,
-      })
-    } catch (error) {
-      console.log(error)
-    }
   }
 
   async handleClick() {
@@ -143,7 +143,6 @@ class Scraper extends Component {
       hide,
       loaded,
       progress,
-
       url,
     } = this.state
 
@@ -240,6 +239,7 @@ const mapState = state => {
 
 const mapDispatch = (dispatch) => {
   return {
+    clearState: () => dispatch(clearState()),
     createArticle: (article) => dispatch(createArticle(article)),
     checkPrev: (url) => dispatch(checkPrev(url)),
     scrapeArticle: (url) => dispatch(scrapeArticle(url)),

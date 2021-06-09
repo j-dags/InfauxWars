@@ -5,6 +5,7 @@ const SCRAPED_PUBLISHER = 'SCRAPED_PUBLISHER'
 const SCRAPED_ARTICLE = 'SCRAPED_ARTICLE'
 const PREPROCESSED = 'PREPROCESSED'
 const GOT_PREDICTION = 'GOT_PREDICTION'
+const CLEAR_STATE = 'CLEAR_STATE'
 
 export const prevArticle = article => ({
   type: PREV_ARTICLE,
@@ -40,6 +41,10 @@ export const gotPrediction = (chartData, label, scores) => ({
   progress: 67
 })
 
+export const clearState = () => ({
+  type: CLEAR_STATE
+})
+
 export const scrapePublisher = (url) => {
   return async dispatch => {
     try {
@@ -59,7 +64,6 @@ export const checkPrev = (url) => {
       const {data} = await axios.get('/api/processing/prev', {
         params: {url: url},
       })
-      console.log('data > ', data)
       if (data) {
         let prevData = [
           data.fake,
@@ -164,6 +168,8 @@ export const getPrediction = (text) => {
       data.forEach((datum) => {
         scores[datum.displayName] = datum.classification.score * 100
       })
+      let {fake, political, reliable, satire, unknown} = scores
+      let scoresOrdered = [fake, political, reliable, satire, unknown]
 
       let max = data.reduce((prev, current) => {
         return prev.classification.score > current.classification.score
@@ -174,7 +180,7 @@ export const getPrediction = (text) => {
         labels: ['Fake', 'Political', 'Reliable', 'Satire', 'Unknown'],
         datasets: [
           {
-            data: scores,
+            data: scoresOrdered,
             backgroundColor: [
               'rgba(255, 99, 132, 0.6)',
               'rgba(255, 206, 86, 0.6)',
@@ -228,6 +234,8 @@ export default function scrapeReducer(state = initialState, action) {
       return { ...state, keywords: action.keywords, processed: action.processed, progress: action.progress}
     case GOT_PREDICTION:
       return { ...state, chartData: action.chartData, label: action.label, progress: action.progress, scores: action.scores}
+    case CLEAR_STATE:
+      return initialState
     default:
       return state
   }

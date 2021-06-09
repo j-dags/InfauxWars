@@ -171,7 +171,6 @@ export default function articlesReducer(state = initialState, action) {
       return {...state, recArticles: action.recArticles}
     }
     case RELATED_ARTICLES: {
-      console.log('action > ', action)
       return {...state, relatedArticles: action.relArticles}
     }
     default:
