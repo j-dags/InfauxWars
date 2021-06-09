@@ -1,4 +1,6 @@
 import axios from 'axios'
+import history from '../history'
+import { createArticle } from './article'
 
 const PREV_ARTICLE = 'PREV_ARTICLE'
 const SCRAPED_PUBLISHER = 'SCRAPED_PUBLISHER'
@@ -6,6 +8,7 @@ const SCRAPED_ARTICLE = 'SCRAPED_ARTICLE'
 const PREPROCESSED = 'PREPROCESSED'
 const GOT_PREDICTION = 'GOT_PREDICTION'
 const CLEAR_STATE = 'CLEAR_STATE'
+const ERROR = 'ERROR'
 
 export const prevArticle = article => ({
   type: PREV_ARTICLE,
@@ -41,6 +44,11 @@ export const gotPrediction = (chartData, label, scores) => ({
   progress: 67
 })
 
+export const gotError = (error) => ({
+  type: ERROR,
+  error
+})
+
 export const clearState = () => ({
   type: CLEAR_STATE
 })
@@ -52,14 +60,17 @@ export const scrapePublisher = (url) => {
         params: { targetUrl: url }
       })
       dispatch(scrapedPublisher(data.publisher, url))
+      // dispatch(scrapeArticle(url))
     } catch (error) {
       console.log(error)
+      throw error
     }
   }
 }
 
 export const checkPrev = (url) => {
   return async dispatch => {
+    // history.push('/hall')
     try {
       const {data} = await axios.get('/api/processing/prev', {
         params: {url: url},
@@ -119,23 +130,9 @@ export const checkPrev = (url) => {
       else dispatch(scrapePublisher(url))
     } catch (error) {
       console.log(error)
-    }
-  }
-}
+      throw error
 
-export const scrapeArticle = (url) => {
-  return async dispatch => {
-    try {
-      const { data } = await axios.get('https://infauxwars-python.herokuapp.com/scrape', { params: { url: url }})
-
-      if (data.text.split(' ').length < 100) {
-        throw new Error('scrape err')
-      } else {
-        const {text, title} = data
-        dispatch(scrapedArticle(text, title))
-      }
-    } catch (error) {
-      console.log(error)
+      // this.props.history.push
     }
   }
 }
@@ -150,6 +147,25 @@ export const preProcess = (article) => {
       dispatch(preProcessed(keywords, text))
     } catch (error) {
       console.log(error)
+      throw error
+    }
+  }
+}
+
+export const scrapeArticle = (url) => {
+  return async dispatch => {
+    try {
+      const { data } = await axios.get('https://infauxwars-python.herokuapp.com/scrape', { params: { url: url }})
+
+      if (data.text.split(' ').length < 100) {
+        throw new Error('scrape err')
+      } else {
+        const {text, title} = data
+        dispatch(scrapedArticle(text, title))
+        dispatch(preProcess(text))
+      }
+    } catch (error) {
+      throw error
     }
   }
 }
@@ -200,13 +216,14 @@ export const getPrediction = (text) => {
       dispatch(gotPrediction(chartData, label, scores))
     } catch (error) {
       console.log(error)
+      throw error
     }
   }
 }
 
 const initialState = {
   chartData: {},
-  error: false,
+  error: null,
   hide: true,
   html: '',
   label: [],
@@ -236,6 +253,8 @@ export default function scrapeReducer(state = initialState, action) {
       return { ...state, chartData: action.chartData, label: action.label, progress: action.progress, scores: action.scores}
     case CLEAR_STATE:
       return initialState
+    case ERROR:
+      return { ...state, error: action.error}
     default:
       return state
   }

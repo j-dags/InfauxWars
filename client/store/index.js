@@ -5,6 +5,7 @@ import {composeWithDevTools} from 'redux-devtools-extension'
 import articlesReducer from './article'
 import scrapeReducer from './scrape'
 
+
 const reducer = combineReducers({articles: articlesReducer, scrape: scrapeReducer})
 
 const middleware = composeWithDevTools(

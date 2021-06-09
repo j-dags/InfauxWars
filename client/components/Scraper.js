@@ -1,15 +1,10 @@
 import React, {Component} from 'react'
-import axios from 'axios'
 import _ from 'lodash'
 import {
-  Chart,
-  RelatedArticles,
-  SimilarArticles,
   Loading,
   Input,
   Landing,
   Fade,
-  Response,
   FlexCol,
 } from '../components'
 import {connect} from 'react-redux'
@@ -35,14 +30,10 @@ class Scraper extends Component {
     this.clearUrl = this.clearUrl.bind(this)
     this.errorMsg = this.errorMsg.bind(this)
     this.handleClick = this.handleClick.bind(this)
-    // this.saveArticle = this.saveArticle.bind(this)
     this.setUrl = this.setUrl.bind(this)
-    this.toggleHide = this.toggleHide.bind(this)
   }
 
   componentDidMount() {
-    this.props.clearState()
-
     window.addEventListener(
       'resize',
       _.debounce(() => {
@@ -54,6 +45,10 @@ class Scraper extends Component {
     )
   }
 
+  // componentDidUpdate(prevProps) {
+  //   console.log('this.props.scrape.error > ', this.props.scrape.error)
+  //   if (this.props.scrape.error) this.setState({loaded: 'no'})
+  // }
 
   // Check if URL is valid
   checkUrl() {
@@ -73,19 +68,21 @@ class Scraper extends Component {
   // Check if URL exists in DB. If so, use DB data instead of re-running prediction
   async checkPrev() {
     this.setState({loaded: 'loading'})
+    await this.props.clearState()
+
     try {
       // Checks if article exists in db, if not dispatches scrape publisher thunk
       await this.props.checkPrev(this.state.url)
-      this.setState({progress: 16})
+      this.setState({progress: 20})
       if (this.props.scrape.scores.length < 1) {
         await this.props.scrapeArticle(this.state.url)
-        this.setState({progress: 33})
+        this.setState({progress: 40})
 
         await this.props.preProcess(this.props.scrape.html)
-        this.setState({progress: 50})
+        this.setState({progress: 60})
 
         await this.props.getPrediction(this.props.scrape.processed)
-        this.setState({progress: 66})
+        this.setState({progress: 80})
 
         await this.props.createArticle({
           publisher: this.props.scrape.publisher,
@@ -100,10 +97,15 @@ class Scraper extends Component {
           keywords: this.props.scrape.keywords,
         })
       }
+      // fetch related articles for news api
       await this.props.fetchRelatedArticles(this.props.scrape.keywords)
-      this.setState({loaded: 'yes'})
+      // redirect to results page
+      this.props.history.push('/results')
+
     } catch (error) {
       console.log(error)
+      // if thunks throw an error, page show an error message
+      this.setState({ loaded: 'no', error: true, url: 'Enter URL'})
     }
   }
 
@@ -122,10 +124,6 @@ class Scraper extends Component {
     } else console.log('INVALID URL')
   }
 
-  toggleHide() {
-    this.setState({hide: !this.state.hide})
-  }
-
   renderHtml() {
     if (!this.props.scrape.html) return ''
     else {
@@ -140,23 +138,11 @@ class Scraper extends Component {
   render() {
     const {
       error,
-      hide,
       loaded,
       progress,
       url,
     } = this.state
 
-    const {
-      chartData,
-      keywords,
-      label,
-      publisher,
-      title,
-    } = this.props.scrape
-
-    const {
-      relatedArticles
-    } = this.props.articles
 
     const search = (
       <>
@@ -189,40 +175,6 @@ class Scraper extends Component {
             </Fade>
           </FlexCol>
         )}
-        <Fade show={loaded === 'yes'} time={5}>
-          <FlexCol id="analytics">
-            <FlexCol id="title">
-              <h3>
-                {publisher}: {title}
-              </h3>
-              <div id="read-more" onClick={this.toggleHide}>
-                Read {hide ? '▼' : '▲'}
-              </div>
-              {!hide && <div id="article-text">{this.renderHtml()}</div>}
-            </FlexCol>
-            <FlexCol id="graph">
-              <Chart chartData={chartData} />
-              {label.length && <Response label={label} />}
-            </FlexCol>
-            <FlexCol id="articles">
-              <RelatedArticles
-                keywords={keywords}
-                url={url}
-                articles={relatedArticles}
-              />
-              <SimilarArticles label={label} url={url} />
-            </FlexCol>
-            <FlexCol>
-              <button
-                type="button"
-                className="back-button"
-                onClick={() => window.location.reload(false)}
-              >
-                Start Over
-              </button>
-            </FlexCol>
-          </FlexCol>
-        </Fade>
       </>
     )
 

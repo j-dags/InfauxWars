@@ -1,6 +1,6 @@
 import React from 'react'
 import {Route, Switch} from 'react-router-dom'
-import {Scraper, HallPage} from './components'
+import {Scraper, HallPage, Results} from './components'
 
 /**
  * COMPONENT
@@ -11,7 +11,7 @@ const Routes = () => {
       {/* Routes placed here are available to all visitors */}
       <Route exact path="/" component={Scraper} />
       <Route path="/hall" component={HallPage} />
-      <Route path="/results" component={HallPage} />
+      <Route path="/results" component={Results} />
     </Switch>
   )
 }

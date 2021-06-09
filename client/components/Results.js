@@ -1,64 +1,27 @@
 import React, { useEffect, useState } from 'react'
-import _ from 'lodash'
+import { useSelector } from 'react-redux'
 import {
   Chart,
   RelatedArticles,
   SimilarArticles,
+  Fade,
   Response,
   FlexCol,
 } from '../components'
-import './Scraper.css'
+import history from '../history'
 
 const Results = () => {
-  const [state, set] = useState({
-    chartData: {},
-    hide: true,
-    windowHeight: window.innerHeight,
-    windowWidth: window.innerWidth,
-  })
+  const [hide, setHide] = useState(true)
 
-  const setChartData = (datum = [0, 0, 0, 0, 0]) => {
-    set({ ...state,
-      chartData: {
-        labels: ['Fake', 'Political', 'Reliable', 'Satire', 'Unknown'],
-        datasets: [
-          {
-            data: datum,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.6)',
-              'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
-              'rgba(153, 102, 255, 0.6)',
-              'rgba(255, 159, 64, 0.6)',
-            ],
-          },
-        ],
-      },
-    })
-  }
+  // useSelector connects redux state to component
+  const { articles, scrape } = useSelector((state) => state)
+  const { chartData, html, keywords, label, publisher, title, url } = scrape
+  const { relatedArticles } = articles
 
-  useEffect(()=> {
-    setChartData()
-    window.addEventListener(
-      'resize',
-      _.debounce(() => {
-        set( ...state, {
-          windowHeight: window.innerHeight,
-          windowWidth: window.innerWidth,
-        })
-      }, 200)
-    )
-  })
-
-
-  const toggleHide = () => {
-    set({ ...state, hide: !state.hide})
-  }
-
+  // function to format the article text
   const renderHtml = () => {
-    if (!state.html) return ''
+    if (!html) return ''
     else {
-      let { html } = state
       let wordCount = html.split(' ').length
       if (wordCount > 500)
         return html.split(' ').slice(0, 500).join(' ').concat('...')
@@ -66,26 +29,19 @@ const Results = () => {
     }
   }
 
-  const {
-    chartData,
-    hide,
-    keywords,
-    label,
-    publisher,
-    relatedArticles,
-    title,
-    url,
-  } = state
+  useEffect(() => {
+    if (!relatedArticles) history.push('/')
+  }, [relatedArticles])
 
-  const search = (
-    <>
-      {/* <Fade show={loaded === 'yes'} time={5}> */}
+  return (
+    <Fade show={true} time={5}>
+      {!relatedArticles ? <></> :
         <FlexCol id="analytics">
           <FlexCol id="title">
             <h3>
               {publisher}: {title}
             </h3>
-            <div id="read-more" onClick={toggleHide}>
+            <div id="read-more" onClick={() => setHide(!hide)}>
               Read {hide ? '▼' : '▲'}
             </div>
             {!hide && <div id="article-text">{renderHtml()}</div>}
@@ -112,11 +68,9 @@ const Results = () => {
             </button>
           </FlexCol>
         </FlexCol>
-      {/* </Fade> */}
-    </>
+      }
+    </Fade>
   )
-
-  return <>{search}</>
 }
 
 export default Results
